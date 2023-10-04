@@ -1,3 +1,10 @@
+/*
+COVID 19 Data Exploration 
+
+Skills used: Joins, CTE's, Temp Tables, Windows Functions, Aggregate Functions, Creating Views
+
+*/
+
 -- Create table
 
 CREATE TABLE CovidDeaths(  
@@ -155,14 +162,13 @@ where continent is not null
 order by 1,2
 
 
---
-
+-- View entire table
 
 SELECT *
 FROM covidvaccinations
 
 
--- Let's join these two tables together
+-- Joining these two tables together
 
 SELECT *
 FROM coviddeaths
@@ -172,6 +178,7 @@ AND coviddeaths.date = covidvaccinations.date
 
 
 -- Looking at Total Population vs Vaccination
+-- Shows Percentage of Population that has recieved at least one Covid Vaccine
 
 SELECT coviddeaths.continent, coviddeaths.location, coviddeaths.date, coviddeaths.population, covidvaccinations.new_vaccinations, 
 SUM(covidvaccinations.new_vaccinations) OVER (PARTITION BY coviddeaths.location ORDER BY coviddeaths.location,coviddeaths.date) as RollingPeopleVaccinated
@@ -184,7 +191,7 @@ WHERE coviddeaths.continent IS NOT NULL
 ORDER BY 2,3
 
 
--- Using a Common Table Expression (CTE)
+-- Using a Common Table Expression (CTE) to perform Calculation on Partition By in previous query
 
 WITH PopulationVsVaccinations (Continent, Location, Date, Population, New_Vaccinations, RollingPeopleVaccinated)
 as 
@@ -204,7 +211,7 @@ WHERE coviddeaths.continent IS NOT NULL
  FROM PopulationVsVaccinations
  
  
- -- TEMP TABLE
+-- Using Temp Table to perform Calculation on Partition By in previous query
  
  DROP Table if exists #PercentPopulationVaccinated
  CREATE Table #PercentPopulationVaccinated
